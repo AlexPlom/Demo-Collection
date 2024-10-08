@@ -1,0 +1,39 @@
+meta {
+  name: Post a Guid
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{BaseUrl}}/WeatherForecast
+  body: json
+  auth: none
+}
+
+headers {
+  content-type: application/json
+}
+
+body:json {
+  {
+    "Guid": "{{guid}}"
+  }
+}
+
+script:pre-request {
+  function generateGUID() {
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+          var r = Math.random() * 16 | 0,
+              v = c === 'x' ? r : (r & 0x3 | 0x8);
+          return v.toString(16);
+      });
+  }
+  
+  // Generate GUID
+  const guid = generateGUID();
+  
+  // Set the GUID in the environment variable
+  let token = bru.setEnvVar("guid", guid);
+  // Log the GUID to verify
+  console.log("Generated GUID: " + guid);
+}

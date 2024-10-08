@@ -1,0 +1,38 @@
+meta {
+  name: Get Weather Forecast
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{BaseUrl}}/WeatherForecast
+  body: none
+  auth: none
+}
+
+tests {
+  test("should have 5 entries in the response", function() {
+    const data = res.getBody();
+    expect(data.length).to.equal(5);
+  });
+  
+  test("each entry should contain date, temperatureC, temperatureF, and summary", function() {
+    const data = res.getBody();
+    
+    data.forEach((item, index) => {
+      expect(item).to.have.property('date');
+      expect(item).to.have.property('temperatureC');
+      expect(item).to.have.property('temperatureF');
+      expect(item).to.have.property('summary');
+    });
+  });
+  
+  test("all temperatures should be numbers", function() {
+    const data = res.getBody();
+  
+    data.forEach(item => {
+      expect(item.temperatureC).to.be.a('number');
+      expect(item.temperatureF).to.be.a('number');
+    });
+  });
+}
